@@ -12,6 +12,7 @@
                 font-family: Arial, sans-serif;
                 text-align: center;
                 margin: 20px; /* Add margin to the body */
+                min-height: 200px;
             }
     
             form {
@@ -52,7 +53,8 @@
         </script>
     </head>
 <body>
-    <img src="logo.png" alt="logo" style="width: 100px; height: 100px; margin-top: 20px;">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="max-width: 50%; height: auto; margin-top: 10px;">
+
     <h1>SKU Price Calculator</h1>
     <form action="/calculate" method="post" onsubmit="return submitForm()">
         <label for="length">Length:</label>
