@@ -43,20 +43,62 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
-        </style>
-        <script>
-            function updateResults(price) {
-                var resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '<h2>Results:</h2>';
-                resultsDiv.innerHTML += '<p>Price: $' + price + '</p>';
+            /* format output table*/
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 20px;
             }
-        </script>
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+</style>
+        </style>
+       <script>
+        function updateResultsTable(results) {
+            var tableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+    
+            // Clear existing rows
+            tableBody.innerHTML = '';
+    
+            // Populate the table with results
+            results.forEach(function(result) {
+                var row = tableBody.insertRow();
+                var cellTitle = row.insertCell(0);
+                var cellLength = row.insertCell(1);
+                var cellWidth = row.insertCell(2);
+                var cellPrinter = row.insertCell(3);
+                var cellSubstrate = row.insertCell(4);
+                var cellFrameType = row.insertCell(5);
+                var cellPrice = row.insertCell(6);
+    
+                cellTitle.innerHTML = result.title;
+                cellLength.innerHTML = result.length;
+                cellWidth.innerHTML = result.width;
+                cellPrinter.innerHTML = result.printer;
+                cellSubstrate.innerHTML = result.substrate;
+                cellFrameType.innerHTML = result.frame_type;
+                cellPrice.innerHTML = result.price;
+            });
+        }
+    </script>
     </head>
 <body>
     <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="max-width: 50%; height: auto; margin-top: 10px;">
 
     <h1>SKU Price Calculator</h1>
     <form action="/calculate" method="post" onsubmit="return submitForm()">
+
+        <label for="title">Title of Piece:</label>
+        <input type="text" name="title" required><br>
+
         <label for="length">Length:</label>
         <input type="text" name="length" required><br>
 
@@ -74,5 +116,61 @@
 
         <button type="submit">Calculate</button>
     </form>
+
+    <!--Display the results in a container on the same page____________________________________________________________________________-->
+    <div id="results-container">
+        <!-- Display results in a table or another suitable format -->
+        <table id="results-table">
+            <!-- Table headers -->
+            <tr>
+                <th>Title</th>
+                <th>Length</th>
+                <th>Width</th>
+                <th>Printer</th>
+                <th>Substrate</th>
+                <th>Frame Type</th>
+                <th>Price</th>
+            </tr>
+            <!-- Table body will be populated dynamically using JavaScript -->
+        </table>
+    </div>
+    <script>
+        function submitForm() {
+            // Get form data
+            var formData = {
+                title: document.getElementsByName("title")[0].value,
+                length: document.getElementsByName("length")[0].value,
+                width: document.getElementsByName("width")[0].value,
+                substrate: document.getElementsByName("substrate")[0].value,
+                printer: document.getElementsByName("printer")[0].value,
+                frame_type: document.getElementsByName("frame_type")[0].value,
+            };
+    
+            // Perform an AJAX request to Flask backend
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/calculate", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+    
+            // Handle the response from the server
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // Parse the JSON response
+                    var results = JSON.parse(xhr.responseText);
+    
+                    // Update the results table with the received data
+                    updateResultsTable(results);
+                } else {
+                    console.error("Failed to get results. Status: " + xhr.status);
+                }
+            };
+    
+            // Convert form data to JSON and send the request
+            xhr.send(JSON.stringify(formData));
+    
+            // Prevent the default form submission
+            return false;
+        }
+    </script>
+    
 </body>
 </html>

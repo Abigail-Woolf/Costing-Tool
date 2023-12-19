@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 import pandas as pd
+from flask import jsonify
+from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 
 # _________________________________________________________________________________________________________________________
 # Specify the path to your Excel file
@@ -44,10 +46,21 @@ hardware_df = pd.DataFrame(hardware_data)
 # Your function goes here
 def total_cost(length, width, frame_type, substrate, printer):
     # Calc Substrate Costs
-    sf = (length * width)/144
-    if substrate in substrate_df['Substrate'].values:
-        substrate_price = substrate_df.loc[substrate_df['Substrate'] == substrate, 'Price/sf'].values[0]
-        cost_of_substrate = substrate_price * sf
+    if substrate == 'canvas':
+        if length > 58 and width > 58:
+            square_feet = ((length + 11) * (width + 11)) / 144
+        else:
+            square_feet = ((length + 8) * (width + 8)) / 144
+    elif substrate == 'paper':
+        square_feet = ((length + 2) * (width + 2)) / 144
+    elif substrate == 'mdf':
+        square_feet = (length * width) / 144
+    else:
+        raise ValueError("Invalid substrate")
+
+    price_per_sf = substrate_df.loc[substrate_df['Substrate'] == substrate, 'Price/sf'].values[0]
+    cost_of_substrate = square_feet * price_per_sf
+    
     
     # Calc Frame costs
     # Check if a matching row exists in the DataFrame
@@ -77,17 +90,41 @@ def total_cost(length, width, frame_type, substrate, printer):
 def index():
     return render_template('index.html')
 
+# Create list to hold the results
+results_list = []  # This list will store the results for each entry
+
 @app.route('/calculate', methods=['POST'])
 def calculate():
-    length = float(request.form.get('length'))
-    width = float(request.form.get('width'))
-    frame_type = request.form.get('frame_type').lower()
-    substrate = request.form.get('substrate').lower()
-    printer = request.form.get('printer').lower()
+    # Retrieve the form data
+    data = request.get_json()
 
-    price = total_cost(length, width, frame_type, substrate, printer)
+    # Check if all required fields are present in the JSON data
+    required_fields = ['title', 'length', 'width', 'frame_type', 'substrate', 'printer']
+    if not all(field in data for field in required_fields):
+        return jsonify({'error': 'All required fields must be provided.'}), 400
 
-    return render_template('result.html', length=length, width=width, frame_type=frame_type, printer=printer, substrate=substrate, price=price)
+    title = data['title']
+    length = float(data['length'])
+    width = float(data['width'])
+    frame_type = data['frame_type'].upper()
+    substrate = data['substrate'].lower()
+    printer = data['printer'].lower()
+
+    price = f"${round(total_cost(length, width, frame_type, substrate, printer),2)}"
+
+    # Append the results to the list
+    results_list.append({
+        'title': title,
+        'length': length,
+        'width': width,
+        'frame_type': frame_type,
+        'substrate': substrate,
+        'printer': printer,
+        'price': price
+    })
+
+    # Return the results as JSON
+    return jsonify(results_list)
 
 if __name__ == '__main__':
     app.run(debug=True)
