@@ -106,13 +106,61 @@
         <input type="text" name="width" required><br>
 
         <label for="substrate">Substrate:</label>
-        <input type="text" name="substrate" required><br>
+        <select name="substrate" id="substrate">
+            <option value="canvas">Canvas</option>
+            <option value="Epson-paper">Epson Paper</option>
+            <option value="Canon-paper">Canon Paper</option>
+            <option value="mdf">MDF</option>
+        </select> <br>
 
         <label for="printer">Printer:</label>
-        <input type="text" name="printer" required><br>
+        <select name="printer" id="printer">
+            <option value="inca-reductive">Inca-Reductive</option>
+            <option value="inca-synograph">Inca-Synograph</option>
+            <option value="epson">Epson</option>
+            <option value="swissQ-synograph">swissQ-Synograph</option>
+            <option value="SwissQ-Reductive">SwissQ-Reductive</option>
+            <option value="canon">Canon</option>
+        </select> <br>
 
         <label for="frame_type">Frame Type:</label>
-        <input type="text" name="frame_type" required><br>
+        <select name="frame_type" id="frame_type">
+            <option value="fps">Gallery Wrap/Mount</option>
+            <option value="bfl">Black Float</option>
+            <option value="cfl">Champagn Float</option>
+            <option value="gfl">Gold Float</option>
+            <option value="bgf">Black Gold Float</option>
+            <option value="nfl">Natural Float</option>
+            <option value="wfl">Walnut Float</option>
+            <option value="wcap">Walnut Cap</option>
+            <option value="bcap">Black Cap</option>
+            <option value="ncap">Natural Cap</option>
+            <option value="gcap">Gold Cap</option>
+            <option value="gwt">Gallery Wrap W/ Tacks</option>
+            <option value="capa">Capital A Antique Gold</option>
+            <option value="capb">Capital B Antique Gold</option>
+            <option value="capba">Capital B Antique Gold W/ Acrylic</option>
+        </select> <br>
+
+        <label for="hardware">Hanging Hardware:</label>
+        <select name="hardware" id="hardware">
+            <option value="cleat">Cleat</option>
+            <option value="wire">Plastic Wire</option>
+            <option value="d-rings">D-rings</option>
+        </select> <br>
+
+        <label for="margin_percent">Desired Percent Margin:</label>
+        <input type="text" name="margin_percent" required><br>
+
+        <label for="royality_percent">Percent Royalty:</label>
+        <select name="royality_percent" id="royality_percent">
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="10">10%</option>
+        </select>
+
+        <label for="is_varn">With Varnish</label>
+        <input type="checkbox" name="is_varn" value="on"><br>
 
         <button type="submit">Calculate</button>
     </form>
@@ -129,6 +177,10 @@
                 <th>Printer</th>
                 <th>Substrate</th>
                 <th>Frame Type</th>
+                <th>Hardware</th>
+                <th>is_varn</th>
+                <th>margin_percent</th>
+                <th>royality_percent</th>
                 <th>Price</th>
             </tr>
             <!-- Table body will be populated dynamically using JavaScript -->
@@ -144,6 +196,10 @@
                 substrate: document.getElementsByName("substrate")[0].value,
                 printer: document.getElementsByName("printer")[0].value,
                 frame_type: document.getElementsByName("frame_type")[0].value,
+                is_varn: document.getElementsByName("is_varn").checked[0],
+                hardware: document.getElementsByName("hardware")[0].value,
+                margin_percent: document.getElementsByName("margin_percent")[0].value,
+                royality_percent: document.getElementsByName("royality_percent")[0].value,
             };
     
             // Perform an AJAX request to Flask backend
