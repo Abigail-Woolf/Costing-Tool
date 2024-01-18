@@ -39,7 +39,7 @@ hardware_data = {
 }
 hardware_df = pd.DataFrame(hardware_data)
 # ___________________________FUNCTION______________________________________________
-def total_cost(length, width, frame_type, substrate, printer, is_varn, hardware, margin_percent, royality_percent):
+# def total_cost(length, width, frame_type, substrate, printer, hardware, margin_percent, royality_percent):
     # valid_options_arg1 = ['fps','gwt','bfl','cfl','gfl','bgf','nfl','wfl','bcap','ncap','gcap','walcap']
     # valid_options_arg2 = ['canvas', 'Epson-paper', 'Canon-paper', 'mdf']
     # valid_options_arg3 = ['inca-reductive', 'inca-synograph', 'epson', 'swissQ-synograph', ' SwissQ-Reductive', 'canon']
@@ -57,6 +57,74 @@ def total_cost(length, width, frame_type, substrate, printer, is_varn, hardware,
     
   #_______________________________________________________________________________ 
     # Calc Substrate Costs
+    # price_per_sf = substrate_df.loc[substrate_df['SubstrateType'] == substrate, 'Price/sf'].values[0]
+    # if substrate == 'canvas':
+    #     if length > 58 and width > 58:
+    #         cost_of_substrate = (((length + 11) * (width + 11)) / 144) * price_per_sf
+    #     else:
+    #         cost_of_substrate = (((length + 8) * (width + 8)) / 144) * price_per_sf
+
+    # elif substrate == 'Epson-paper' or 'Canon-paper':
+    #     cost_of_substrate = (((length + 1.5) * (width +1.5)) / 144) * price_per_sf
+
+    # elif substrate == 'mdf':
+    #     #Check if dimensions match 49x60
+    #     if (length == 60 and width == 48) or (length == 48 and width == 60):
+    #         cost_of_substrate= 15.32
+    #     else:
+    #         cost_of_substrate = ((length * width) / 144) * 1.2
+    # else:
+    #     raise ValueError("Invalid substrate")
+    #return cost_of_substrate
+
+    # price_per_sf = substrate_df.loc[substrate_df['Substrate'] == substrate, 'Price/sf'].values[0]
+    #cost_of_substrate = square_feet * price_per_sf
+    
+  #_______________________________________________________________________________  
+    # Calc Frame costs
+    # Check if a matching row exists in the DataFrame
+#     length= float(length)
+#     width= float(width)
+#     matching_rows = frames_df[
+#         (frames_df['Length'] == length) &
+#         (frames_df['Width'] == width) &
+#         (frames_df['Frame'].str.contains(frame_type))
+#     ]
+
+#     if not matching_rows.empty:
+#         cost_of_frame = matching_rows['GP Price'].values[0]
+#         return cost_of_frame
+#     else:
+#         print(f"Frame with Length {length}, Width {width}, and Type {frame_type} not found.")
+#         return None  # Or any other appropriate value or indication
+
+# #__________________________________________________________________________________
+#     # Implement the calculation for printer costs
+
+#     ink_per_sf = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'ink'].values[0]
+#     labor_cost = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'labor'].values[0]
+
+#     total_printer_cost = ink_per_sf + labor_cost
+#     #return total_printer_cost
+    
+# #_______________________________________________________________________________ 
+#     #implement hardware costs
+#     hardware_cost = hardware_df.loc[hardware_df['hardwareType'] == hardware, 'price'].values[0]
+# #___________________________________________________________________________________
+#     # Create the desired margin calculator
+#     final_cost_no_roy = cost_of_substrate + cost_of_frame + total_printer_cost + hardware_cost
+#     # return final_cost
+
+#  #___________________________________________________________________________________   
+#     margin_dec = margin_percent * .01
+#     royality_dec = royality_percent * .01
+    
+#     wsp = final_cost_no_roy/(1-royality_dec - margin_dec)
+#     royalty_value = wsp * royality_dec
+#     final_cost_with_roy = final_cost_no_roy + royalty_value
+#     return final_cost_with_roy, wsp
+ #________________________END FUNCTION______________________________________________    
+def test_substrate_cost(length, width, substrate):
     price_per_sf = substrate_df.loc[substrate_df['SubstrateType'] == substrate, 'Price/sf'].values[0]
     if substrate == 'canvas':
         if length > 58 and width > 58:
@@ -64,23 +132,26 @@ def total_cost(length, width, frame_type, substrate, printer, is_varn, hardware,
         else:
             cost_of_substrate = (((length + 8) * (width + 8)) / 144) * price_per_sf
 
-    elif substrate == 'Epson-paper' or 'Canon-paper':
+    elif substrate == 'Epson-paper' or substrate == 'Canon-paper':
         cost_of_substrate = (((length + 1.5) * (width +1.5)) / 144) * price_per_sf
 
+
+    elif substrate == 'tar-board':
+        cost_of_substrate = (((length + .125) * (width + .125)) / 144) * price_per_sf
+    
     elif substrate == 'mdf':
         #Check if dimensions match 49x60
         if (length == 60 and width == 48) or (length == 48 and width == 60):
             cost_of_substrate= 15.32
         else:
-            cost_of_substrate = ((length * width) / 144) * 1.2
+            cost_of_substrate = (((length * width) / 144) * 1.2) * price_per_sf
     else:
         raise ValueError("Invalid substrate")
-    #return cost_of_substrate
 
-    # price_per_sf = substrate_df.loc[substrate_df['Substrate'] == substrate, 'Price/sf'].values[0]
-    #cost_of_substrate = square_feet * price_per_sf
-    
-  #_______________________________________________________________________________  
+
+    return cost_of_substrate
+
+def test_frame_cost(length, width, frame_type):
     # Calc Frame costs
     # Check if a matching row exists in the DataFrame
     length= float(length)
@@ -98,39 +169,76 @@ def total_cost(length, width, frame_type, substrate, printer, is_varn, hardware,
         print(f"Frame with Length {length}, Width {width}, and Type {frame_type} not found.")
         return None  # Or any other appropriate value or indication
 
-#__________________________________________________________________________________
     # Implement the calculation for printer costs
-
-    ink_per_sf = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'ink'].values[0]
-    labor_cost = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'labor'].values[0]
-    inkvarn_per_sf = ink_per_sf + 0.10
-
-    total_printer_cost_without_varnish = ((ink_per_sf) * (length * width) / 144) + labor_cost
-    total_printer_cost_with_varnish = ((inkvarn_per_sf) * (length * width) / 144) + labor_cost
-
-    if is_varn == "on":
-        total_printer_cost = total_printer_cost_with_varnish
-    else:
-        total_printer_cost = total_printer_cost_without_varnish
-    #return total_printer_cost
+def test_printer_cost(length, width, printer):
     
-#_______________________________________________________________________________ 
-    #implement hardware costs
+        ink_per_sf = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'ink'].values[0]
+        labor_cost = printer_costs_df.loc[printer_costs_df['PrinterName'] == printer, 'labor'].values[0]
+
+        total_printer_cost = ((ink_per_sf) * (length * width) / 144) + labor_cost
+        return total_printer_cost
+
+def test_hardware_cost(hardware):
+#implement hardware costs
     hardware_cost = hardware_df.loc[hardware_df['hardwareType'] == hardware, 'price'].values[0]
-#___________________________________________________________________________________
+    return hardware_cost
+
     # Create the desired margin calculator
-    final_cost_no_roy = cost_of_substrate + cost_of_frame + total_printer_cost + hardware_cost
-    # return final_cost
+def royalty_calculator(final_cost, margin_percent, royalty_percent):
+
 
  #___________________________________________________________________________________   
-    margin_dec = margin_percent * .01
-    royality_dec = royality_percent * .01
+        margin_dec = margin_percent * .01
+        royalty_dec = royalty_percent * .01
     
-    wsp = final_cost_no_roy/(1-royality_dec - margin_dec)
-    royalty_value = wsp * royality_dec
-    final_cost_with_roy = final_cost_no_roy + royalty_value
-    return final_cost_with_roy, wsp
- #________________________END FUNCTION______________________________________________       
+        wsp = final_cost/(1-royalty_dec - margin_dec)
+        royalty_value = wsp * royalty_dec
+        final_cost_with_roy = final_cost + royalty_value
+        return final_cost_with_roy
+
+        # Create the desired margin calculator
+def wsp_calculator(final_cost, margin_percent, royalty_percent):
+ #___________________________________________________________________________________   
+        margin_dec = margin_percent * .01
+        royalty_dec = royalty_percent * .01
+    
+        wsp = final_cost/(1-royalty_dec - margin_dec)
+        royalty_value = wsp * royalty_dec
+        final_cost_with_roy = final_cost + royalty_value
+        return wsp
+
+
+def final_cost(length, width, frame_type, printer, substrate, hardware, margin_percent, royalty_percent):
+    test_substrate = test_substrate_cost(length, width, substrate)
+    test_frames = test_frame_cost(length, width,frame_type)
+    test_printer = test_printer_cost(length, width,printer)
+    test_hardware = test_hardware_cost(hardware)
+    final_cost = test_substrate + test_frames + test_printer + test_hardware
+    def wsp_calculator(final_cost, margin_percent, royalty_percent):
+ #___________________________________________________________________________________   
+        margin_dec = margin_percent * .01
+        royalty_dec = royalty_percent * .01
+    
+        wsp = final_cost/(1-royalty_dec - margin_dec)
+        royalty_value = wsp * royalty_dec
+        final_cost_with_roy = final_cost + royalty_value
+    
+    test_wsp = wsp_calculator(final_cost, margin_percent, royalty_percent)
+    cost_with_roy = margin_calculator(final_cost, margin_percent, royalty_percent)
+
+    data = {'Substrate Cost': [test_substrate],
+            'Frame Cost': [test_frames],
+            'Printer Costs': [test_printer],
+            'Harware Costs': [test_hardware],
+            'Final GP Cost': [final_cost],
+            'Cost w/ Royalty': [cost_with_roy],
+            'WSP @ % Margin': [test_wsp]}
+    results_df = pd.DataFrame(data)
+    return results_df
+    
+ #________________________END FUNCTION______________________________________________ 
+
+
 
 @app.route('/')
 def index():
@@ -155,13 +263,12 @@ def calculate():
     frame_type = data['frame_type'].lower()
     substrate = data['substrate'].lower()
     printer = data['printer'].lower()
-    is_varn = 'is_varn' in data and data['is_varn'] == 'on'
     hardware = data['hardware'].lower()
     margin_percent = data['margin_percent']
     royality_percent = data['royality_percent']
 
 
-    price = f"${round(total_cost(length, width, frame_type, substrate, printer,is_varn, hardware, margin_percent, royality_percent),2)}"
+    price = f"${round(final_cost(length, width, frame_type, substrate, printer, hardware, margin_percent, royality_percent),2)}"
 
     # Append the results to the list
     results_list.append({
@@ -175,8 +282,9 @@ def calculate():
         'margin_percent': margin_percent,
         'Royality_percent': royality_percent,
         'price': price,
-        'wsp': wsp
+        'wsp': test_wsp
     })
+
 
     # Return the results as JSON
     return jsonify(results_list)

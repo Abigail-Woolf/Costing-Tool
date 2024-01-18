@@ -8,19 +8,95 @@
         
         <!-- Add some CSS styles for spacing -->
         <style>
+            h1 {
+                margin-bottom: 10px; /* Adjust the margin-bottom to move the heading up */
+            }   
             body {
                 font-family: Arial, sans-serif;
                 text-align: center;
                 margin: 20px; /* Add margin to the body */
                 min-height: 200px;
             }
-    
+
+            .container {
+                display: flex;
+                justify-content: space-between;
+                margin: 0 auto; /* Center the container horizontally */
+                max-width: 800px; /* Set a max-width for the container */
+                flex-wrap: wrap;
+             }
+
+            .form-container,
+            .table-container {
+                flex: 1;
+                margin: 10px;
+            }
             form {
-                max-width: 400px; /* Limit form width for better readability */
-                margin: 0 auto; /* Center the form horizontally */
-                padding: 20px; /* Add padding to the form */
+                max-width: 300px; /* Limit form width for better readability */
+                margin: 0; /* Center the form horizontally */
+                padding: 15px; /* Add padding to the form */
                 border: 1px solid #ccc; /* Add a border for better visibility */
                 border-radius: 8px; /* Optional: Add rounded corners */
+            }
+            
+            
+            /* format output table*/
+            table {
+                border-collapse: collapse;
+                width: 50%;
+                margin-top: 20px;
+            }
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background-color: #f2f2f2;
+            }
+                /* width: 5px Adjust width of results table cols */
+                    /* Adjust the width for each column individually */
+            th:nth-child(1),
+            td:nth-child(1) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(2),
+            td:nth-child(2) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(3),
+            td:nth-child(3) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(4),
+            td:nth-child(4) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(5),
+            td:nth-child(5) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(6),
+            td:nth-child(6) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(7),
+            td:nth-child(7) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(8),
+            td:nth-child(8) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(9),
+            td:nth-child(9) {
+                width:1px; /* Adjust the width for the first column */
+            }
+            th:nth-child(10),
+            td:nth-child(10) {
+                width:1px; /* Adjust the width for the first column */
             }
     
             label {
@@ -29,6 +105,12 @@
             }
     
             input {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 16px; /* Add space below each input */
+                box-sizing: border-box;
+            }
+            select{
                 width: 100%;
                 padding: 8px;
                 margin-bottom: 16px; /* Add space below each input */
@@ -43,24 +125,9 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
-            /* format output table*/
-            table {
-                border-collapse: collapse;
-                width: 100%;
-                margin-top: 20px;
-            }
 
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-
-            th {
-                background-color: #f2f2f2;
-            }
-</style>
-        </style>
+            
+    </style>
        <script>
         function updateResultsTable(results) {
             var tableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
@@ -91,82 +158,82 @@
     </script>
     </head>
 <body>
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="max-width: 50%; height: auto; margin-top: 10px;">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="max-width: 35%; height: auto; margin-top: 0px;">
 
     <h1>SKU Price Calculator</h1>
-    <form action="/calculate" method="post" onsubmit="return submitForm()">
+    <div class="container"></div>
+        <div class="form-container">
+        <form action="/calculate" method="post" onsubmit="return submitForm()">
 
-        <label for="title">Title of Piece:</label>
-        <input type="text" name="title" required><br>
+            <label for="title">Title of Piece:</label>
+            <input type="text" name="title" required><br>
 
-        <label for="length">Length:</label>
-        <input type="text" name="length" required><br>
+         <label for="length">Length:</label>
+            <input type="text" name="length" required><br>
 
-        <label for="width">Width:</label>
-        <input type="text" name="width" required><br>
+         <label for="width">Width:</label>
+         <input type="text" name="width" required><br>
 
-        <label for="substrate">Substrate:</label>
-        <select name="substrate" id="substrate">
+            <label for="substrate">Substrate:</label>
+         <select name="substrate" id="substrate">
             <option value="canvas">Canvas</option>
             <option value="Epson-paper">Epson Paper</option>
             <option value="Canon-paper">Canon Paper</option>
             <option value="mdf">MDF</option>
-        </select> <br>
+            </select> <br>
 
-        <label for="printer">Printer:</label>
-        <select name="printer" id="printer">
-            <option value="inca-reductive">Inca-Reductive</option>
-            <option value="inca-synograph">Inca-Synograph</option>
-            <option value="epson">Epson</option>
-            <option value="swissQ-synograph">swissQ-Synograph</option>
-            <option value="SwissQ-Reductive">SwissQ-Reductive</option>
-            <option value="canon">Canon</option>
-        </select> <br>
+            <label for="printer">Printer:</label>
+            <select name="printer" id="printer">
+                <option value="inca-reductive">Inca-Reductive</option>
+                <option value="inca-synograph">Inca-Synograph</option>
+                <option value="epson">Epson</option>
+                <option value="swissQ-synograph">swissQ-Synograph</option>
+                <option value="SwissQ-Reductive">SwissQ-Reductive</option>
+                <option value="canon">Canon</option>
+            </select> <br>
 
-        <label for="frame_type">Frame Type:</label>
-        <select name="frame_type" id="frame_type">
-            <option value="fps">Gallery Wrap/Mount</option>
-            <option value="bfl">Black Float</option>
-            <option value="cfl">Champagn Float</option>
-            <option value="gfl">Gold Float</option>
-            <option value="bgf">Black Gold Float</option>
-            <option value="nfl">Natural Float</option>
-            <option value="wfl">Walnut Float</option>
-            <option value="wcap">Walnut Cap</option>
-            <option value="bcap">Black Cap</option>
-            <option value="ncap">Natural Cap</option>
-            <option value="gcap">Gold Cap</option>
-            <option value="gwt">Gallery Wrap W/ Tacks</option>
-            <option value="capa">Capital A Antique Gold</option>
-            <option value="capb">Capital B Antique Gold</option>
-            <option value="capba">Capital B Antique Gold W/ Acrylic</option>
-        </select> <br>
+            <label for="frame_type">Frame Type:</label>
+            <select name="frame_type" id="frame_type">
+                <option value="fps">Gallery Wrap/Mount</option>
+                <option value="bfl">Black Float</option>
+                <option value="cfl">Champagn Float</option>
+                <option value="gfl">Gold Float</option>
+                <option value="bgf">Black Gold Float</option>
+                <option value="nfl">Natural Float</option>
+                <option value="wfl">Walnut Float</option>
+                <option value="wcap">Walnut Cap</option>
+                <option value="bcap">Black Cap</option>
+                <option value="ncap">Natural Cap</option>
+                <option value="gcap">Gold Cap</option>
+                <option value="gwt">Gallery Wrap W/ Tacks</option>
+                <option value="capa">Capital A Antique Gold</option>
+                <option value="capb">Capital B Antique Gold</option>
+                <option value="capba">Capital B Antique Gold W/ Acrylic</option>
+            </select> <br>
 
-        <label for="hardware">Hanging Hardware:</label>
-        <select name="hardware" id="hardware">
-            <option value="cleat">Cleat</option>
-            <option value="wire">Plastic Wire</option>
-            <option value="d-rings">D-rings</option>
-        </select> <br>
+            <label for="hardware">Hanging Hardware:</label>
+            <select name="hardware" id="hardware">
+                <option value="cleat">Cleat</option>
+                <option value="wire">Plastic Wire</option>
+                <option value="d-rings">D-rings</option>
+            </select> <br>
 
-        <label for="margin_percent">Desired Percent Margin:</label>
-        <input type="text" name="margin_percent" required><br>
+            <label for="margin_percent">Desired Percent Margin:</label>
+            <input type="text" name="margin_percent" required><br>
 
-        <label for="royality_percent">Percent Royalty:</label>
-        <select name="royality_percent" id="royality_percent">
-            <option value="0">0%</option>
-            <option value="5">5%</option>
-            <option value="10">10%</option>
-        </select>
+            <label for="royality_percent">Percent Royalty:</label>
+            <select name="royality_percent" id="royality_percent">
+                <option value="0">0%</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+            </select>
 
-        <label for="is_varn">With Varnish</label>
-        <input type="checkbox" name="is_varn" value="on"><br>
-
-        <button type="submit">Calculate</button>
-    </form>
+            <button type="submit">Calculate</button>
+        </form>
+    </div>
 
     <!--Display the results in a container on the same page____________________________________________________________________________-->
-    <div id="results-container">
+    <div class="table-container">
         <!-- Display results in a table or another suitable format -->
         <table id="results-table">
             <!-- Table headers -->
@@ -178,7 +245,6 @@
                 <th>Substrate</th>
                 <th>Frame Type</th>
                 <th>Hardware</th>
-                <th>is_varn</th>
                 <th>margin_percent</th>
                 <th>royality_percent</th>
                 <th>Price</th>
@@ -186,6 +252,8 @@
             <!-- Table body will be populated dynamically using JavaScript -->
         </table>
     </div>
+</div>
+
     <script>
         function submitForm() {
             // Get form data
@@ -196,7 +264,6 @@
                 substrate: document.getElementsByName("substrate")[0].value,
                 printer: document.getElementsByName("printer")[0].value,
                 frame_type: document.getElementsByName("frame_type")[0].value,
-                is_varn: document.getElementsByName("is_varn").checked[0],
                 hardware: document.getElementsByName("hardware")[0].value,
                 margin_percent: document.getElementsByName("margin_percent")[0].value,
                 royality_percent: document.getElementsByName("royality_percent")[0].value,
