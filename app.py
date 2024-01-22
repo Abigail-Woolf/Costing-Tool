@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask, flash, redirect, render_template, request
 import pandas as pd
 from flask import jsonify
 from flask_cors import CORS
+import logging
 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
+logging.basicConfig(level=logging.DEBUG)
 
 # _________________________________________________________________________________________________________________________
 # Specify the path to your Excel file
-excel_file_path = '/Users/abbywoolf/Desktop/Costing-Tool/Cleaned_Cost_Data.xlsx'
+excel_file_path = './Cleaned_Cost_Data.xlsx'
 # /Users/abbywoolf/Desktop/Costing-Tool
 # Specify the sheet name you want to import
 sheet_name = 'Frames'  # Replace 'Sheet1' with the actual sheet name
@@ -240,54 +242,52 @@ def final_cost(length, width, frame_type, printer, substrate, hardware, margin_p
 
 
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def index():
+    if request.method=='POST':
+        return render_template('index.html', data=calculate())
     return render_template('index.html')
 
-# Create list to hold the results
-results_list = []  # This list will store the results for each entry
 
-@app.route('/calculate', methods=['POST'])
 def calculate():
     # Retrieve the form data
-    data = request.get_json()
+    data = request.form
+    results = []
+    
+    if data:
 
-    # Check if all required fields are present in the JSON data
-    required_fields = ['title', 'length', 'width', 'frame_type', 'substrate', 'printer', 'hardware', 'margin_percent','royality_percent']
-    if not all(field in data for field in required_fields):
-        return jsonify({'error': 'All required fields must be provided.'}), 400
+        title = data.get('title')
+        length = data.get('length')
+        width = data.get('width')
+        printer = data.get('printer')
+        substrate = data.get('substrate')
+        frame_type = data.get('frame_type')
+        hardware = data.get('hardware')
+        margin_percent = data.get('margin_percent')
+        royality_percent = data.get('royality_percent')
+        
+        # price = f"${round(final_cost(length, width, frame_type, substrate, printer, hardware, margin_percent, royality_percent),2)}"
 
-    title = data['title']
-    length = float(data['length'])
-    width = float(data['width'])
-    frame_type = data['frame_type'].lower()
-    substrate = data['substrate'].lower()
-    printer = data['printer'].lower()
-    hardware = data['hardware'].lower()
-    margin_percent = data['margin_percent']
-    royality_percent = data['royality_percent']
-
-
-    price = f"${round(final_cost(length, width, frame_type, substrate, printer, hardware, margin_percent, royality_percent),2)}"
-
-    # Append the results to the list
-    results_list.append({
-        'title': title,
-        'length': length,
-        'width': width,
-        'printer': printer,
-        'substrate': substrate,
-        'frame_type': frame_type,
-        'hardware': hardware,
-        'margin_percent': margin_percent,
-        'Royality_percent': royality_percent,
-        'price': price,
-        'wsp': test_wsp
-    })
+        # Append the results to the list
+        results.append({
+            'title': title,
+            'length': length,
+            'width': width,
+            'printer': printer,
+            'substrate': substrate,
+            'frame_type': frame_type,
+            'hardware': hardware,
+            'margin_percent': margin_percent,
+            'Royality_percent': royality_percent,
+            'price': 'TEST',
+            # 'wsp': test_wsp
+        })
 
 
-    # Return the results as JSON
-    return jsonify(results_list)
+        # Return the results as JSON
+        return results[0]
+    else:
+        return {}
 
 if __name__ == '__main__':
     app.run(debug=True)

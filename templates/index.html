@@ -1,185 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SKU Price Calculator</title>
-        
-        <!-- Add some CSS styles for spacing -->
-        <style>
-            h1 {
-                margin-bottom: 10px; /* Adjust the margin-bottom to move the heading up */
-            }   
-            body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                margin: 20px; /* Add margin to the body */
-                min-height: 200px;
-            }
 
-            .container {
-                display: flex;
-                justify-content: space-between;
-                margin: 0 auto; /* Center the container horizontally */
-                max-width: 800px; /* Set a max-width for the container */
-                flex-wrap: wrap;
-             }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKU Price Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Add some CSS styles for spacing -->
+</head>
 
-            .form-container,
-            .table-container {
-                flex: 1;
-                margin: 10px;
-            }
-            form {
-                max-width: 300px; /* Limit form width for better readability */
-                margin: 0; /* Center the form horizontally */
-                padding: 15px; /* Add padding to the form */
-                border: 1px solid #ccc; /* Add a border for better visibility */
-                border-radius: 8px; /* Optional: Add rounded corners */
-            }
-            
-            
-            /* format output table*/
-            table {
-                border-collapse: collapse;
-                width: 50%;
-                margin-top: 20px;
-            }
-
-            th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }
-
-            th {
-                background-color: #f2f2f2;
-            }
-                /* width: 5px Adjust width of results table cols */
-                    /* Adjust the width for each column individually */
-            th:nth-child(1),
-            td:nth-child(1) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(2),
-            td:nth-child(2) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(3),
-            td:nth-child(3) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(4),
-            td:nth-child(4) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(5),
-            td:nth-child(5) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(6),
-            td:nth-child(6) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(7),
-            td:nth-child(7) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(8),
-            td:nth-child(8) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(9),
-            td:nth-child(9) {
-                width:1px; /* Adjust the width for the first column */
-            }
-            th:nth-child(10),
-            td:nth-child(10) {
-                width:1px; /* Adjust the width for the first column */
-            }
-    
-            label {
-                display: block;
-                margin-bottom: 10px; /* Add space below each label */
-            }
-    
-            input {
-                width: 100%;
-                padding: 8px;
-                margin-bottom: 16px; /* Add space below each input */
-                box-sizing: border-box;
-            }
-            select{
-                width: 100%;
-                padding: 8px;
-                margin-bottom: 16px; /* Add space below each input */
-                box-sizing: border-box;
-            }
-    
-            button {
-                background-color: #4CAF50;
-                color: white;
-                padding: 10px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            
-    </style>
-       <script>
-        function updateResultsTable(results) {
-            var tableBody = document.getElementById('results-table').getElementsByTagName('tbody')[0];
-    
-            // Clear existing rows
-            tableBody.innerHTML = '';
-    
-            // Populate the table with results
-            results.forEach(function(result) {
-                var row = tableBody.insertRow();
-                var cellTitle = row.insertCell(0);
-                var cellLength = row.insertCell(1);
-                var cellWidth = row.insertCell(2);
-                var cellPrinter = row.insertCell(3);
-                var cellSubstrate = row.insertCell(4);
-                var cellFrameType = row.insertCell(5);
-                var cellPrice = row.insertCell(6);
-    
-                cellTitle.innerHTML = result.title;
-                cellLength.innerHTML = result.length;
-                cellWidth.innerHTML = result.width;
-                cellPrinter.innerHTML = result.printer;
-                cellSubstrate.innerHTML = result.substrate;
-                cellFrameType.innerHTML = result.frame_type;
-                cellPrice.innerHTML = result.price;
-            });
-        }
-    </script>
-    </head>
 <body>
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="max-width: 35%; height: auto; margin-top: 0px;">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo"
+        style="max-width: 35%; height: auto; margin-top: 0px;">
 
     <h1>SKU Price Calculator</h1>
     <div class="container"></div>
-        <div class="form-container">
-        <form action="/calculate" method="post" onsubmit="return submitForm()">
+    <div class="form-container">
+        <form id="price-calc-form" action="/" method="post">
 
             <label for="title">Title of Piece:</label>
-            <input type="text" name="title" required><br>
+            <input type="text" name="title" value="{{ request.form['title'] }}" required><br>
 
-         <label for="length">Length:</label>
-            <input type="text" name="length" required><br>
+            <label for="length">Length:</label>
+            <input type="text" name="length" value="{{ request.form['length'] }}" required><br>
 
-         <label for="width">Width:</label>
-         <input type="text" name="width" required><br>
+            <label for="width">Width:</label>
+            <input type="text" name="width" value="{{ request.form['width'] }}" required><br>
 
             <label for="substrate">Substrate:</label>
-         <select name="substrate" id="substrate">
-            <option value="canvas">Canvas</option>
-            <option value="Epson-paper">Epson Paper</option>
-            <option value="Canon-paper">Canon Paper</option>
-            <option value="mdf">MDF</option>
+            <select name="substrate" id="substrate">
+                <option value="canvas">Canvas</option>
+                <option value="Epson-paper">Epson Paper</option>
+                <option value="Canon-paper">Canon Paper</option>
+                <option value="mdf">MDF</option>
             </select> <br>
 
             <label for="printer">Printer:</label>
@@ -219,7 +73,7 @@
             </select> <br>
 
             <label for="margin_percent">Desired Percent Margin:</label>
-            <input type="text" name="margin_percent" required><br>
+            <input type="text" name="margin_percent" value="{{ request.form['margin_percent'] }}" required><br>
 
             <label for="royality_percent">Percent Royalty:</label>
             <select name="royality_percent" id="royality_percent">
@@ -228,15 +82,14 @@
                 <option value="10">10%</option>
             </select>
 
-            <button type="submit">Calculate</button>
+            <button>Calculate</button>
         </form>
     </div>
 
     <!--Display the results in a container on the same page____________________________________________________________________________-->
     <div class="table-container">
         <!-- Display results in a table or another suitable format -->
-        <table id="results-table">
-            <!-- Table headers -->
+        <table id="results-table" class="hidden">
             <tr>
                 <th>Title</th>
                 <th>Length</th>
@@ -249,51 +102,28 @@
                 <th>royality_percent</th>
                 <th>Price</th>
             </tr>
+            {% if data %}
+            <tr>
+                <td>{{data.title}}</td>
+                <td>{{data.length}}</td>
+                <td>{{data.width}}</td>
+                <td>{{data.printer}}</td>
+                <td>{{data.substrate}}</td>
+                <td>{{data.frame_type}}</td>
+                <td>{{data.hardware}}</td>
+                <td>{{data.margin_percent}}</t>
+                <td>{{data.royality_percent}}</td>
+                <td>{{data.price}}</td>
+                {}
+            </tr>
+            {% endif %}
+
+            <!-- Table headers -->
+
             <!-- Table body will be populated dynamically using JavaScript -->
         </table>
     </div>
-</div>
-
-    <script>
-        function submitForm() {
-            // Get form data
-            var formData = {
-                title: document.getElementsByName("title")[0].value,
-                length: document.getElementsByName("length")[0].value,
-                width: document.getElementsByName("width")[0].value,
-                substrate: document.getElementsByName("substrate")[0].value,
-                printer: document.getElementsByName("printer")[0].value,
-                frame_type: document.getElementsByName("frame_type")[0].value,
-                hardware: document.getElementsByName("hardware")[0].value,
-                margin_percent: document.getElementsByName("margin_percent")[0].value,
-                royality_percent: document.getElementsByName("royality_percent")[0].value,
-            };
-    
-            // Perform an AJAX request to Flask backend
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/calculate", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-    
-            // Handle the response from the server
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // Parse the JSON response
-                    var results = JSON.parse(xhr.responseText);
-    
-                    // Update the results table with the received data
-                    updateResultsTable(results);
-                } else {
-                    console.error("Failed to get results. Status: " + xhr.status);
-                }
-            };
-    
-            // Convert form data to JSON and send the request
-            xhr.send(JSON.stringify(formData));
-    
-            // Prevent the default form submission
-            return false;
-        }
-    </script>
-    
+    </div>
 </body>
+
 </html>
